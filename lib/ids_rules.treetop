@@ -40,7 +40,7 @@ grammar IDSRules
   end
 
   rule app
-    "alert" space proto space src_host:hosts space src_port:ports space direction space dst_host:hosts space dst_port:ports space
+    space? "alert" space proto space src_host:hosts space src_port:ports space direction space dst_host:hosts space dst_port:ports space
     {
         def process
             return {:protocol => proto.text_value,
@@ -75,7 +75,7 @@ grammar IDSRules
     }
   end
   rule key
-    [-a-zA-Z0-9_]+
+    [-a-zA-Z0-9_.]+
     {
         def process
             text_value
@@ -115,7 +115,7 @@ grammar IDSRules
     [\s]+
   end
   rule proto
-    "tcp" / "udp" / "icmp" / "ip" / "pkthdr"
+    "tcp" / "udp" / "icmp" / "ip" / "pkthdr" / "http" / "tls" / "ftp" / "ssh" / "smtp"
   end
   rule hosts
     (!" " .)* / "any"
