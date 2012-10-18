@@ -6,7 +6,7 @@ describe IDSRulesParser do
 
 	describe "processing actions" do
 		before do
-      @content = File.read(File.expand_path(File.join(File.dirname(__FILE__),"..","test","rules","test2.rules")))
+      @content = get_fixture("test2.rules").read
 			@ids_r = IDSRulesParser.new
     end
 		it { @content.should_not be_nil }
