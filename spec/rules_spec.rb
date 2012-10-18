@@ -17,4 +17,13 @@ describe IDSRulesParser do
 			it { @ids_r.parse(@content).process.should_not be_empty }
     end
   end
+
+  describe "with header pkthdr" do
+    before do
+      @content = %q/alert pkthdr any any -> any any (msg:"SURICATA IPv4 packet too small"; decode-event:ipv4.pkt_too_small; sid:2200000; rev:1;)/
+      @ids_r = IDSRulesParser.new
+    end
+
+    it { @ids_r.parse(@content).should_not be_nil }
+  end
 end

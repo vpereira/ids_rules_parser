@@ -1,17 +1,14 @@
 require 'rubygems'
 require 'treetop'
 require 'pp'
+require 'pry'
 
 grammar IDSRules
   rule rules_file
     (complete_sig / comment / empty_line)*
     {
         def process
-            elements.collect do |x|
-                x.process
-            end.select do |x|
-                !x.nil?
-            end
+          elements.collect(&:process).reject(&:nil?)
         end
     }
   end
@@ -41,6 +38,7 @@ grammar IDSRules
         end
     }
   end
+
   rule app
     "alert" space proto space src_host:hosts space src_port:ports space direction space dst_host:hosts space dst_port:ports space
     {
@@ -54,6 +52,7 @@ grammar IDSRules
         end
     }
   end
+
   rule sig
     "(" values:(lone_key / key_value_pair)+ ")"
     {
@@ -67,8 +66,8 @@ grammar IDSRules
     }
   end
   rule key_value_pair
-    #space? key ":" value:(quoted_value/value) ";"
-    space? key ":" value:((quoted_value)/(value)) space?
+    space? key ":" value:((quoted_value)/(value)) ";"?
+    #(space? key ":" value:((quoted_value)/(value)) ";"?)+
     {
         def process
             return {key.process => value.process}
@@ -76,7 +75,7 @@ grammar IDSRules
     }
   end
   rule key
-    [\w]+
+    [-a-zA-Z0-9_]+
     {
         def process
             text_value
@@ -116,7 +115,7 @@ grammar IDSRules
     [\s]+
   end
   rule proto
-    "tcp" / "udp" / "icmp" / "ip"
+    "tcp" / "udp" / "icmp" / "ip" / "pkthdr"
   end
   rule hosts
     (!" " .)* / "any"

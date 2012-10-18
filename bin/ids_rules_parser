@@ -69,7 +69,16 @@ file_list.each do |filename|
 			client_friendly_data = {}
 			while((contents = file.gets) != nil)
 				# Process a line of input
-				rule_data = parser.parse(contents).process rescue []
+
+        rule_data = parser.parse(contents).process #rescue []
+
+        #if rule_data.empty?
+        #  next if contents[0] == '#'
+        #  next if contents[0] == "\n"
+        #  puts contents
+        #  STDIN.gets
+        #  next
+        #end
 				
 				# Output rule information to json file
 				rule_data.each do |x|
