@@ -24,14 +24,14 @@ Choice.options do
       long '--csv csv_file'
       desc 'Output rule messages to the specified csv file.'
     end
-    
+
     option :help do
       short '-h'
       long '--help'
       desc 'Show this message.'
     end
-    
-            #--------------------------------------------------------------------------------
+
+  #--------------------------------------------------------------------------------
 	footer ''
 	footer 'Parses the specified rules file and outputs a json file. If the path of the the'
 	footer 'specifed file is /path/to/file.rules, then the json file will be written to '
@@ -41,7 +41,6 @@ Choice.options do
 	footer 'output a csv file in the following format:'
 	footer ''      
 	footer 'generator_id, signature_id, signature_revision, message'
-    
 end
 
 # Open csv file, if option selected
@@ -67,18 +66,18 @@ file_list.each do |filename|
 	File.open(filename+".json",'w') do |writer|
 		begin
 			client_friendly_data = {}
-			while((contents = file.gets) != nil)
+      file.each_line do |contents|
 				# Process a line of input
 
-        rule_data = parser.parse(contents).process rescue []
+        rule_data = parser.parse(contents).process #rescue []
 
-        if rule_data.empty?
-          next if contents[0] == '#'
-          next if contents[0] == "\n"
-          puts contents
-          STDIN.gets
-          next
-        end
+        #if rule_data.empty?
+        #  next if contents[0] == '#'
+        #  next if contents[0] == "\n"
+        #  puts contents
+        #  STDIN.gets
+        #  next
+        #end
 				
 				# Output rule information to json file
 				rule_data.each do |x|
@@ -106,4 +105,3 @@ file_list.each do |filename|
 		end
 	end
 end
-exit(1)
