@@ -69,27 +69,23 @@ file_list.each do |filename|
       file.each_line do |contents|
 				# Process a line of input
 
+        next if contents[0] == '#'
+        next if contents[0] == "\n"
+
         rule_data = parser.parse(contents).process #rescue []
 
-        #if rule_data.empty?
-        #  next if contents[0] == '#'
-        #  next if contents[0] == "\n"
-        #  puts contents
-        #  STDIN.gets
-        #  next
-        #end
+        #binding.pry
+        if rule_data.empty?
+          puts contents
+          STDIN.gets
+          next
+        end
 				
 				# Output rule information to json file
 				rule_data.each do |x|
 					# Extract key
-					gid = x[:signature]["gid"]
-					if(gid.nil?) then
-						gid = "1"
-					end
-					sid = x[:signature]["sid"]
-					rev = x[:signature]["rev"]
-					msg = x[:signature]["msg"]
-					#key = gid + "." + sid + "." + rev
+          msg, sid, rev  = x[:signature].map { |a| [a["sid"],a["rev"],a["msg"]] }.flatten.compact
+					#key =  sid + "." + rev
 					
 					# Merge all data into a single hash
           # we were using a key composed by gid,sid,rev. SID must be unique, so i will use it as key
@@ -97,7 +93,7 @@ file_list.each do |filename|
 					
 					# Output message to csv file, if option selected
 					if Choice.choices[:csv]
-						csv.puts gid + "," + sid + "," + rev + "," + msg
+						csv.puts  sid + "," + rev + "," + msg
 					end
 				end
 			end
