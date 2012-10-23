@@ -89,10 +89,11 @@ file_list.each do |filename|
 					sid = x[:signature]["sid"]
 					rev = x[:signature]["rev"]
 					msg = x[:signature]["msg"]
-					key = gid + "." + sid + "." + rev
+					#key = gid + "." + sid + "." + rev
 					
 					# Merge all data into a single hash
-					client_friendly_data.merge!(key => x)
+          # we were using a key composed by gid,sid,rev. SID must be unique, so i will use it as key
+					client_friendly_data.merge!(sid => x)
 					
 					# Output message to csv file, if option selected
 					if Choice.choices[:csv]
