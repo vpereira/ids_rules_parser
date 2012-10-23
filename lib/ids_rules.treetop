@@ -57,11 +57,14 @@ grammar IDSRules
     "(" values:(lone_key / key_value_pair)+ ")"
     {
         def process
-            collection = values.elements.inject({}) do |hash,x|
-                hash.merge!(x.process)
-                hash
-            end
-            collection
+            values.elements.collect(&:process)
+            #the problem with the following approach is that there is repeated keys
+            #it means that with the hash + merge approach we just keep the last merged value
+            #collection = values.elements.inject({}) do |hash,x|
+            #    hash.merge!(x.process)
+            #    hash
+            #end
+            #collection
         end
     }
   end
