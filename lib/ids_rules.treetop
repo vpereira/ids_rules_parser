@@ -40,17 +40,24 @@ grammar IDSRules
   end
 
   rule app
-    space? "alert" space proto space src_host:hosts space src_port:ports space direction space dst_host:hosts space dst_port:ports space
+    space? rule_action space proto space src_host:hosts space src_port:ports space direction space dst_host:hosts space dst_port:ports space
     {
         def process
-            return {:protocol => proto.text_value,
+            return {
+                    :rule_action => rule_action.text_value,
+                    :protocol => proto.text_value,
                     :src_hosts => src_host.text_value,
                     :src_ports => src_port.text_value,
                     :dst_hosts => dst_host.text_value,
                     :dst_ports => dst_port.text_value,
-                    :direction => direction.text_value}
+                    :direction => direction.text_value
+                    }
         end
     }
+  end
+
+  rule rule_action
+    ("alert" / "log" / "pass" / "activate" / "dynamic" / "drop" / "reject" / "sdrop")
   end
 
   rule sig
